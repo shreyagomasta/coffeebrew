@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>CloudBrew Coffee Co. — H1 2026 Executive Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060912;--card:rgba(255,255,255,.032);--border:rgba(255,255,255,.07);
+  --amber:#F59E0B;--amber-l:#FCD34D;--green:#22C55E;--red:#F87171;
+  --blue:#60A5FA;--purple:#A78BFA;--muted:#475569;--text:#E2E8F0;
+  --sidebar:228px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:auto}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+a{text-decoration:none;color:inherit}
+/* ── LAYOUT ── */
+#sidebar{
+  position:fixed;left:0;top:0;height:100vh;width:var(--sidebar);
+  background:#090d1a;border-right:1px solid rgba(255,255,255,.055);
+  display:flex;flex-direction:column;padding:26px 12px 20px;
+  z-index:100;overflow-y:auto;
+  animation:sideIn .55s cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes sideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+#main{margin-left:var(--sidebar);padding:0 52px;position:relative;z-index:1}
+.glow{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 80% 50% at 65% 0%,rgba(245,158,11,.055) 0%,transparent 60%);
+}
+/* ── REVEAL ANIMATIONS ── */
+[data-r]{
+  opacity:0;transform:translateY(22px);
+  transition:opacity .58s cubic-bezier(.16,1,.3,1),transform .58s cubic-bezier(.16,1,.3,1);
+}
+[data-r=x]{transform:translateX(-22px)}
+[data-r=s]{transform:scale(.96) translateY(10px)}
+[data-r].in{opacity:1!important;transform:none!important}
+[data-d="1"]{transition-delay:.08s}[data-d="2"]{transition-delay:.16s}
+[data-d="3"]{transition-delay:.24s}[data-d="4"]{transition-delay:.32s}
+[data-d="5"]{transition-delay:.4s}[data-d="6"]{transition-delay:.48s}
+/* ── SIDEBAR COMPONENTS ── */
+.logo{padding:0 8px;margin-bottom:28px}
+.logo-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:19px;font-weight:800;color:var(--amber);letter-spacing:-.01em}
+.logo-sub{font-size:11px;color:#1e3050;margin-top:3px;font-weight:500}
+.nav{display:flex;flex-direction:column;gap:2px;flex:1}
+.si{
+  display:flex;align-items:center;gap:10px;padding:9px 14px;border-radius:10px;
+  font-size:12.5px;font-weight:500;color:var(--muted);
+  transition:background .18s,color .18s,padding-left .18s;cursor:pointer;
+}
+.si:hover{background:rgba(245,158,11,.08);color:var(--amber)}
+.si.on{background:rgba(245,158,11,.12);color:var(--amber);border-left:2.5px solid var(--amber);padding-left:11.5px}
+.si-icon{font-size:14px;flex-shrink:0}
+.sidebar-stats{border-top:1px solid rgba(255,255,255,.05);padding-top:16px;margin-top:16px}
+.ss-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.ss-lbl{color:#1e3050;font-size:11px}
+.ss-val{font-family:'DM Mono',monospace;font-size:11px;font-weight:600}
+/* ── SECTIONS ── */
+.sec{padding:72px 0}
+.sec-head{display:flex;align-items:center;gap:16px;margin-bottom:32px}
+.sec-icon{
+  display:flex;align-items:center;justify-content:center;width:42px;height:42px;
+  border-radius:12px;background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.18);
+  font-size:19px;flex-shrink:0;
+}
+.sec-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:20px;font-weight:700;color:#F1F5F9;line-height:1.2}
+.sec-sub{color:var(--muted);font-size:12.5px;margin-top:3px}
+.divider{height:1px;background:rgba(255,255,255,.05);margin:0 0 72px}
+/* ── GLASS CARD ── */
+.card{
+  background:var(--card);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid var(--border);border-radius:16px;padding:22px;
+  transition:transform .2s cubic-bezier(.16,1,.3,1),border-color .2s;
+}
+.card:hover{transform:scale(1.018);border-color:rgba(245,158,11,.22)}
+.card.no-hover:hover{transform:none;border-color:var(--border)}
+/* ── GRIDS ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.g13{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
+.g32{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.mb18{margin-bottom:18px}.mb16{margin-bottom:16px}.mb4{margin-bottom:4px}
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600}
+.br{background:rgba(248,113,113,.15);color:#F87171}
+.ba{background:rgba(245,158,11,.15);color:#F59E0B}
+.bg{background:rgba(34,197,94,.15);color:#22C55E}
+.bb{background:rgba(96,165,250,.15);color:#60A5FA}
+.bp{background:rgba(167,139,250,.15);color:#A78BFA}
+/* ── TYPOGRAPHY ── */
+.jakarta{font-family:'Plus Jakarta Sans',sans-serif}
+.mono{font-family:'DM Mono',monospace}
+.amber-grad{
+  background:linear-gradient(135deg,#F59E0B,#F97316);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+/* ── HERO ── */
+.hero-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:46px;font-weight:800;line-height:1.12;margin-bottom:10px}
+.hero-sub{color:#CBD5E1;font-size:28px;font-weight:600;display:block;margin-top:4px}
+.hero-meta{color:var(--muted);font-size:13.5px;margin-bottom:52px}
+.badges-row{display:flex;gap:8px;margin-bottom:20px}
+/* ── KPI ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.kpi-label{color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.kpi-val{font-family:'DM Mono',monospace;font-size:26px;font-weight:600;margin-bottom:5px}
+.kpi-sub{color:var(--muted);font-size:12px}
+/* ── CHART WRAPPER ── */
+.chart-wrap{position:relative}
+.chart-label{color:#94A3B8;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.chart-hint{color:var(--muted);font-size:11px;margin-bottom:16px}
+.chart-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+/* ── MINI LIST (channel/payment/dow) ── */
+.mini-list{display:flex;flex-direction:column;gap:11px;margin-top:18px}
+.mini-row{display:flex;align-items:center;justify-content:space-between}
+.mini-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-right:8px}
+.mini-name{color:#CBD5E1;font-size:13px;display:flex;align-items:center}
+.mini-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:600}
+/* ── PRODUCT/HIGHLIGHT CARDS ── */
+.hi-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.hi-icon{font-size:16px;margin-bottom:4px}
+.hi-title{color:#F1F5F9;font-size:15px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;margin-bottom:4px;line-height:1.3}
+.hi-val{font-family:'DM Mono',monospace;font-size:22px;font-weight:600;margin-bottom:4px}
+.hi-sub{color:var(--muted);font-size:12px;margin-bottom:12px}
+/* ── DEPT TABLE ── */
+.dept-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.dept-name{color:#E2E8F0;font-size:13px;font-weight:600}
+.dept-sub{color:var(--muted);font-size:11px}
+.dept-pay{font-family:'DM Mono',monospace;color:var(--amber);font-size:13px}
+/* ── PAYROLL ANOMALY CARDS ── */
+.ano-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.ano-card{padding:18px;border-radius:16px;background:var(--card);border:1px solid var(--border)}
+.ano-name{color:#F1F5F9;font-size:14px;font-weight:700;margin-bottom:6px}
+.ano-role{color:var(--muted);font-size:12px;margin-bottom:8px}
+.ano-sal{font-family:'DM Mono',monospace;color:var(--amber);font-size:18px;font-weight:600}
+.ano-avg{color:var(--muted);font-size:11px;margin-top:3px}
+/* ── SUPPLIER TABLE ── */
+.tbl{width:100%;border-collapse:collapse}
+.tbl th{padding:10px 20px;text-align:left;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;background:rgba(255,255,255,.02)}
+.tbl td{padding:13px 20px;border-top:1px solid rgba(255,255,255,.04);font-size:13px}
+.tbl td.name{color:#E2E8F0;font-weight:600}
+.tbl td.cat{color:var(--muted)}
+.tbl td.amt{font-family:'DM Mono',monospace;color:var(--amber)}
+.tbl td.cnt{color:#94A3B8}
+/* ── ANOMALY FLAGS ── */
+.flag-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.flag-card{
+  padding:22px;border-radius:16px;background:var(--card);
+  border:1px solid var(--border);position:relative;overflow:hidden;
+  transition:transform .18s cubic-bezier(.16,1,.3,1);
+}
+.flag-card:hover{transform:scale(1.015)}
+.flag-sev{position:absolute;top:16px;right:18px}
+.flag-title{color:#F1F5F9;font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:700;margin-bottom:10px;padding-right:90px;line-height:1.3}
+.flag-desc{color:#94A3B8;font-size:13px;line-height:1.65;margin-bottom:14px}
+.flag-action{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:12px}
+.flag-arrow{color:var(--green);font-weight:700}
+/* ── RECOMMENDATIONS ── */
+.rec-list{display:flex;flex-direction:column;gap:9px}
+.rec-item{
+  display:flex;align-items:center;gap:16px;padding:13px 20px;border-radius:12px;
+  border:1px solid transparent;transition:transform .15s,border-color .15s;cursor:default;
+}
+.rec-item:hover{transform:scale(1.005)}
+.rec-p{font-size:11px;font-weight:700;min-width:88px;flex-shrink:0}
+.rec-title{color:#E2E8F0;font-size:13px;font-weight:500;flex:1}
+.rec-cat{background:rgba(255,255,255,.05);color:#64748B;font-size:11px;padding:3px 10px;border-radius:6px;white-space:nowrap;flex-shrink:0}
+/* ── INSIGHT CALLOUT ── */
+.callout{padding:20px;border-radius:16px;background:var(--card)}
+.callout-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.callout-body{color:#94A3B8;font-size:13px;line-height:1.65}
+/* ── FOOTER CARD ── */
+.footer-card{
+  padding:32px;border-radius:16px;
+  background:linear-gradient(135deg,rgba(245,158,11,.06),rgba(249,115,22,.04));
+  border:1px solid rgba(245,158,11,.18);text-align:center;margin-top:40px;
+}
+.footer-label{color:var(--amber);font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.footer-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;color:#F1F5F9;margin-bottom:8px}
+.footer-sub{color:var(--muted);font-size:13px;line-height:1.6}
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1e2d45;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#334155}
+</style>
+</head>
+<body>
+
+<!-- Background glow -->
+<div class="glow"></div>
+
+<!-- ════ SIDEBAR ════ -->
+<aside id="sidebar">
+  <div class="logo">
+    <div class="logo-name">CloudBrew</div>
+    <div class="logo-sub">H1 2026 · Executive Dashboard</div>
+  </div>
+  <nav class="nav">
+    <a href="#overview" class="si on"><span class="si-icon">🏠</span>Overview</a>
+    <a href="#sales" class="si"><span class="si-icon">📊</span>Revenue</a>
+    <a href="#products" class="si"><span class="si-icon">☕</span>Products &amp; Mktg</a>
+    <a href="#reviews" class="si"><span class="si-icon">⭐</span>Customers</a>
+    <a href="#hr" class="si"><span class="si-icon">👥</span>Workforce</a>
+    <a href="#supply" class="si"><span class="si-icon">🚚</span>Supply Chain</a>
+    <a href="#anomalies" class="si"><span class="si-icon">🚨</span>Red Flags</a>
+    <a href="#recs" class="si"><span class="si-icon">✅</span>Actions</a>
+  </nav>
+  <div class="sidebar-stats">
+    <div class="ss-row"><span class="ss-lbl">Total Revenue</span><span class="ss-val" style="color:#F59E0B">₹15.6L</span></div>
+    <div class="ss-row"><span class="ss-lbl">Gross Margin</span><span class="ss-val" style="color:#22C55E">57.1%</span></div>
+    <div class="ss-row"><span class="ss-lbl">Red Flags</span><span class="ss-val" style="color:#F87171">6 items</span></div>
+  </div>
+</aside>
+
+<!-- ════ MAIN CONTENT ════ -->
+<main id="main">
+
+<!-- ── OVERVIEW ── -->
+<section id="overview" class="sec" style="padding-top:64px;padding-bottom:60px">
+  <div class="badges-row" data-r>
+    <span class="badge ba">H1 2026 Audit</span>
+    <span class="badge bb">Series B Due Diligence</span>
+    <span class="badge br">5 Critical Flags</span>
+  </div>
+  <h1 class="hero-title" data-r data-d="1">
+    <span class="amber-grad">CloudBrew Coffee Co.</span>
+    <span class="hero-sub">Executive Intelligence Dashboard</span>
+  </h1>
+  <p class="hero-meta" data-r data-d="2">January – June 2026 &nbsp;·&nbsp; Bangalore HQ &nbsp;·&nbsp; 10 cross-departmental datasets &nbsp;·&nbsp; Internal audit for Series B</p>
+  <div class="kpi-grid">
+    <div class="card" data-r data-d="1" style="border-top:2px solid rgba(245,158,11,.35)">
+      <div class="kpi-label">Total H1 Revenue <span>💰</span></div>
+      <div class="kpi-val" style="color:#F59E0B">₹15.6L</div>
+      <div class="kpi-sub">1,096 transactions</div>
+    </div>
+    <div class="card" data-r data-d="2" style="border-top:2px solid rgba(34,197,94,.35)">
+      <div class="kpi-label">Gross Profit <span>📈</span></div>
+      <div class="kpi-val" style="color:#22C55E">₹8.9L</div>
+      <div class="kpi-sub">57.1% gross margin</div>
+    </div>
+    <div class="card" data-r data-d="3" style="border-top:2px solid rgba(96,165,250,.35)">
+      <div class="kpi-label">Avg Order Value <span>🛒</span></div>
+      <div class="kpi-val" style="color:#60A5FA">₹1,428</div>
+      <div class="kpi-sub">50.5% carried a discount</div>
+    </div>
+    <div class="card" data-r data-d="1" style="border-top:2px solid rgba(252,211,77,.35)">
+      <div class="kpi-label">Customer NPS <span>⭐</span></div>
+      <div class="kpi-val" style="color:#FCD34D">41.7</div>
+      <div class="kpi-sub">3.69 avg · 180 reviews</div>
+    </div>
+    <div class="card" data-r data-d="2" style="border-top:2px solid rgba(167,139,250,.35)">
+      <div class="kpi-label">Active Employees <span>👥</span></div>
+      <div class="kpi-val" style="color:#A78BFA">41</div>
+      <div class="kpi-sub">₹43.2L/mo payroll</div>
+    </div>
+    <div class="card" data-r data-d="3" style="border-top:2px solid rgba(248,113,113,.35)">
+      <div class="kpi-label">Unpaid Invoices <span>⚠️</span></div>
+      <div class="kpi-val" style="color:#F87171">₹1.08 Cr</div>
+      <div class="kpi-sub">33 of 95 invoices pending</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── REVENUE ── -->
+<section id="sales" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">📊</div>
+    <div><div class="sec-title">Revenue Intelligence</div><div class="sec-sub">Performance across stores, channels, months, and days of the week</div></div>
+  </div>
+  <div class="g2 mb18">
+    <div class="card no-hover" data-r>
+      <div class="chart-head">
+        <span class="chart-label">Monthly Revenue Trend</span>
+        <span class="badge br">Mar bulk-order spike ⚠</span>
+      </div>
+      <div class="chart-wrap" style="height:230px"><canvas id="c-monthly"></canvas></div>
+    </div>
+    <div class="card no-hover" data-r data-d="1">
+      <div class="chart-head">
+        <span class="chart-label">Revenue by Store</span>
+        <span style="color:var(--muted);font-size:11px">🔴 = flagged</span>
+      </div>
+      <div class="chart-wrap" style="height:230px"><canvas id="c-store"></canvas></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card" data-r>
+      <div class="chart-label mb4">Channel Mix</div>
+      <div class="mini-list">
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#F59E0B"></span>Online (D2C)</span><span class="mini-val" style="color:#F59E0B">44.6%</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#60A5FA"></span>In-Store (POS)</span><span class="mini-val" style="color:#60A5FA">31.0%</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#A78BFA"></span>Mobile App</span><span class="mini-val" style="color:#A78BFA">24.4%</span></div>
+      </div>
+    </div>
+    <div class="card" data-r data-d="1">
+      <div class="chart-label mb4">Payment Methods</div>
+      <div class="mini-list">
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#22C55E"></span>UPI</span><span class="mini-val" style="color:#22C55E">38.2%</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#F59E0B"></span>Card</span><span class="mini-val" style="color:#F59E0B">34.3%</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#94A3B8"></span>Cash</span><span class="mini-val" style="color:#94A3B8">18.7%</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#A78BFA"></span>Wallet</span><span class="mini-val" style="color:#A78BFA">8.8%</span></div>
+      </div>
+    </div>
+    <div class="card" data-r data-d="2">
+      <div class="chart-label mb4">Day-of-Week Peak</div>
+      <div class="mini-list">
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#F59E0B"></span>Friday (peak)</span><span class="mini-val" style="color:#F59E0B">₹2.90L</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#60A5FA"></span>Sunday</span><span class="mini-val" style="color:#60A5FA">₹2.36L</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#A78BFA"></span>Monday</span><span class="mini-val" style="color:#A78BFA">₹2.24L</span></div>
+        <div class="mini-row"><span class="mini-name"><span class="mini-dot" style="background:#F87171"></span>Thursday (low)</span><span class="mini-val" style="color:#F87171">₹1.93L</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── PRODUCTS & MARKETING ── -->
+<section id="products" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">☕</div>
+    <div><div class="sec-title">Products &amp; Marketing Performance</div><div class="sec-sub">SKU revenue by margin tier and all 18 campaign ROI comparisons</div></div>
+  </div>
+  <div class="g2 mb18">
+    <div class="card no-hover" data-r>
+      <div class="chart-label mb4">Top 8 Products by Revenue</div>
+      <div class="chart-hint">🟢 &gt;60% margin &nbsp;·&nbsp; 🟡 40–60% &nbsp;·&nbsp; 🔵 &lt;40%</div>
+      <div class="chart-wrap" style="height:250px"><canvas id="c-product"></canvas></div>
+    </div>
+    <div class="card no-hover" data-r data-d="1">
+      <div class="chart-label mb4">Campaign ROI Comparison (18 campaigns)</div>
+      <div class="chart-hint">🔴 negative ROI &nbsp;·&nbsp; 🟡 moderate &nbsp;·&nbsp; 🟢 top performer</div>
+      <div class="chart-wrap" style="height:250px"><canvas id="c-campaign"></canvas></div>
+    </div>
+  </div>
+  <div class="g3">
+    <div class="card" data-r style="border-top:2px solid rgba(245,158,11,.35)">
+      <div class="hi-label" style="color:#F59E0B">🌟 Star SKU</div>
+      <div class="hi-icon">📦</div>
+      <div class="hi-title">Coffee Subscription Box</div>
+      <div class="hi-val" style="color:#F59E0B">₹2.59L</div>
+      <div class="hi-sub">187 units · 48.2% margin · fastest growing</div>
+      <span class="badge ba">Recurring Revenue</span>
+    </div>
+    <div class="card" data-r data-d="1" style="border-top:2px solid rgba(34,197,94,.35)">
+      <div class="hi-label" style="color:#22C55E">💎 Best Margin</div>
+      <div class="hi-icon">✨</div>
+      <div class="hi-title">Limited Edition Geisha</div>
+      <div class="hi-val" style="color:#22C55E">78.3% margin</div>
+      <div class="hi-sub">₹2.45L revenue · ★ 4.9/5 rated</div>
+      <span class="badge bg">Premium Anchor</span>
+    </div>
+    <div class="card" data-r data-d="2" style="border-top:2px solid rgba(96,165,250,.35)">
+      <div class="hi-label" style="color:#60A5FA">🚀 Best ROI Campaign</div>
+      <div class="hi-icon">📧</div>
+      <div class="hi-title">Email Newsletter Q1</div>
+      <div class="hi-val" style="color:#60A5FA">7,590% ROI</div>
+      <div class="hi-sub">₹12 CPA · 2,562 conversions</div>
+      <span class="badge bb">Scale This Channel</span>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── CUSTOMER INTELLIGENCE ── -->
+<section id="reviews" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">⭐</div>
+    <div><div class="sec-title">Customer Intelligence &amp; Digital Funnel</div><div class="sec-sub">Review ratings, NPS trends, and web analytics for H1 2026</div></div>
+  </div>
+  <div class="g2 mb18">
+    <div class="card no-hover" data-r>
+      <div class="chart-label" style="margin-bottom:18px">Store Average Rating (out of 5)</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="c-ratings"></canvas></div>
+    </div>
+    <div class="card no-hover" data-r data-d="1">
+      <div class="chart-label" style="margin-bottom:18px">Website Traffic — Sessions vs Unique Visitors</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="c-traffic"></canvas></div>
+    </div>
+  </div>
+  <div class="g4 mb18">
+    <div class="card" data-r><div class="kpi-label">Overall NPS</div><div class="kpi-val" style="color:#F59E0B">41.7</div><div class="kpi-sub">Positive 53% · Neg 11%</div></div>
+    <div class="card" data-r data-d="1"><div class="kpi-label">H1 Unique Visitors</div><div class="kpi-val" style="color:#60A5FA">2.95L</div><div class="kpi-sub">4.02L total sessions</div></div>
+    <div class="card" data-r data-d="2"><div class="kpi-label">Avg Conv. Rate</div><div class="kpi-val" style="color:#22C55E">3.09%</div><div class="kpi-sub">Feb peak at 4.22%</div></div>
+    <div class="card" data-r data-d="3"><div class="kpi-label">Avg Bounce Rate</div><div class="kpi-val" style="color:#F87171">47.4%</div><div class="kpi-sub">May high: 52.2%</div></div>
+  </div>
+  <div class="callout" data-r style="border-left:3px solid var(--amber);background:rgba(245,158,11,.03)">
+    <div class="callout-title" style="color:var(--amber)">⚡ Insight — Bangalore Service Paradox</div>
+    <p class="callout-body">Bangalore-Koramangala has the <strong style="color:#E2E8F0">highest review rating (4.03/5)</strong> but the <strong style="color:#F87171">lowest support satisfaction score (3.07/5)</strong>. Product quality is excellent — but when issues arise, resolution quality is poor. Focused agent training and a revised escalation protocol are needed at this location.</p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── WORKFORCE ── -->
+<section id="hr" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">👥</div>
+    <div><div class="sec-title">Workforce &amp; Payroll Analysis</div><div class="sec-sub">Department performance, compensation anomalies, and attrition risk signals</div></div>
+  </div>
+  <div class="g13 mb18">
+    <div class="card no-hover" data-r>
+      <div class="chart-label mb4">Monthly Payroll by Department</div>
+      <div class="chart-hint">🟢 perf ≥ 4.0 &nbsp;·&nbsp; 🟡 3.5–3.9 &nbsp;·&nbsp; 🔴 &lt; 3.5</div>
+      <div class="chart-wrap" style="height:210px"><canvas id="c-dept"></canvas></div>
+    </div>
+    <div class="card no-hover" data-r data-d="1">
+      <div class="chart-label" style="margin-bottom:18px">Department Summary</div>
+      <div id="dept-list"></div>
+    </div>
+  </div>
+  <div style="color:#F87171;font-size:13px;font-weight:600;display:flex;align-items:center;gap:8px;margin-bottom:14px" data-r>
+    <span>⚠️</span> Payroll Anomalies — employees with &gt;30% deviation from role average
+  </div>
+  <div class="ano-grid" id="ano-grid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── SUPPLY CHAIN ── -->
+<section id="supply" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">🚚</div>
+    <div><div class="sec-title">Supply Chain &amp; Procurement</div><div class="sec-sub">Vendor relationships, invoice status, and logistics dependency risk</div></div>
+  </div>
+  <div class="g3 mb18">
+    <div class="card" data-r><div class="kpi-label">Total Invoiced (H1)</div><div class="kpi-val" style="color:#60A5FA">₹3.16 Cr</div><div class="kpi-sub">95 invoices · 8 vendors</div></div>
+    <div class="card" data-r data-d="1"><div class="kpi-label">Unpaid + Pending</div><div class="kpi-val" style="color:#F87171">₹1.08 Cr</div><div class="kpi-sub">18 pending · 15 overdue</div></div>
+    <div class="card" data-r data-d="2"><div class="kpi-label">Delinquency Rate</div><div class="kpi-val" style="color:#F87171">34.7%</div><div class="kpi-sub">33 of 95 invoices unpaid</div></div>
+  </div>
+  <div class="card no-hover mb18" data-r style="padding:0;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid rgba(255,255,255,.055)">
+      <span class="chart-label">Top Vendors by Total Exposure</span>
+    </div>
+    <table class="tbl">
+      <thead><tr><th>Vendor</th><th>Category</th><th>Total Invoiced</th><th>Invoices</th><th>Unpaid</th></tr></thead>
+      <tbody>
+        <tr><td class="name">Karnataka Coffee Estates</td><td class="cat">Coffee Beans</td><td class="amt">₹58.3L</td><td class="cnt">16</td><td><span class="badge ba">3 unpaid</span></td></tr>
+        <tr><td class="name">Nilgiri Green Farms</td><td class="cat">Coffee Beans</td><td class="amt">₹55.1L</td><td class="cnt">19</td><td><span class="badge br">5 unpaid</span></td></tr>
+        <tr><td class="name">LogiExpress India</td><td class="cat">Logistics</td><td class="amt">₹54.5L</td><td class="cnt">10</td><td><span class="badge br">3 unpaid</span></td></tr>
+        <tr><td class="name">BrewMasters Intl</td><td class="cat">Specialty Beans</td><td class="amt">₹40.4L</td><td class="cnt">14</td><td><span class="badge br">4 unpaid</span></td></tr>
+        <tr><td class="name">EcoPack Green</td><td class="cat">Eco Packaging</td><td class="amt">₹38.3L</td><td class="cnt">12</td><td><span class="badge br">4 unpaid</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="callout" data-r style="border-left:3px solid #F87171;background:rgba(248,113,113,.04)">
+    <div class="callout-title" style="color:#F87171">🚨 Critical — Logistics Single-Source Dependency</div>
+    <p class="callout-body"><strong style="color:#E2E8F0">LogiExpress India</strong> is the sole logistics partner with ₹54.5L invoiced and 3 unpaid invoices. They raised rates 3× this year (11% → 18% of COGS). Any payment dispute risks halting deliveries across all 6 locations. <strong style="color:var(--amber)">Finding an alternate logistics partner is a confirmed Q3 CEO priority.</strong></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── RED FLAGS ── -->
+<section id="anomalies" class="sec">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">🚨</div>
+    <div><div class="sec-title">Critical Anomaly Findings</div><div class="sec-sub">6 red-flag items requiring immediate executive attention before Series B</div></div>
+  </div>
+  <div class="flag-grid" id="flag-grid"></div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ── RECOMMENDATIONS ── -->
+<section id="recs" class="sec" style="padding-bottom:100px">
+  <div class="sec-head" data-r>
+    <div class="sec-icon">✅</div>
+    <div><div class="sec-title">Recommended Actions</div><div class="sec-sub">Prioritised roadmap — immediate, Q3 2026, and strategic post-Series B</div></div>
+  </div>
+  <div class="rec-list" id="rec-list"></div>
+  <div class="footer-card" data-r>
+    <div class="footer-label">Confidential · Internal Use Only</div>
+    <div class="footer-title">CloudBrew Coffee Co. · H1 2026 Executive Audit</div>
+    <p class="footer-sub">All figures are synthetic datasets generated for SAP Joule Work Desktop Training — August 2026.<br/>January – June 2026 &nbsp;·&nbsp; 6 retail locations &nbsp;·&nbsp; 10 cross-departmental source files</p>
+  </div>
+</section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+<script>
+// ── LENIS SMOOTH SCROLL ──────────────────────────────────────────────────
+try {
+  const lenis = new Lenis({duration:1.2, easing:function(t){return Math.min(1,1.001-Math.pow(2,-10*t));}});
+  function raf(time){lenis.raf(time);requestAnimationFrame(raf);}
+  requestAnimationFrame(raf);
+} catch(e){ console.warn('Lenis unavailable'); }
+
+// ── REVEAL ANIMATIONS ────────────────────────────────────────────────────
+(function(){
+  var els = document.querySelectorAll('[data-r]');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){ e.target.classList.add('in'); obs.unobserve(e.target); }
+    });
+  },{threshold:.08,rootMargin:'-20px 0px'});
+  els.forEach(function(el){ obs.observe(el); });
+})();
+
+// ── ACTIVE SECTION TRACKING ──────────────────────────────────────────────
+(function(){
+  var links = document.querySelectorAll('.si');
+  var obs = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(e.isIntersecting){
+        links.forEach(function(l){l.classList.remove('on');});
+        var a = document.querySelector('.si[href="#'+e.target.id+'"]');
+        if(a) a.classList.add('on');
+      }
+    });
+  },{threshold:.25});
+  document.querySelectorAll('section[id]').forEach(function(s){ obs.observe(s); });
+})();
+
+// ── SMOOTH NAV CLICK ─────────────────────────────────────────────────────
+document.querySelectorAll('.si').forEach(function(el){
+  el.addEventListener('click',function(e){
+    e.preventDefault();
+    var id = el.getAttribute('href').slice(1);
+    var target = document.getElementById(id);
+    if(target) target.scrollIntoView({behavior:'smooth'});
+  });
+});
+
+// ── CHART SHARED CONFIG ──────────────────────────────────────────────────
+var tip = {
+  backgroundColor:'#0d1628',borderColor:'rgba(245,158,11,.25)',borderWidth:1,
+  titleColor:'#F1F5F9',bodyColor:'#94A3B8',padding:12,cornerRadius:8,displayColors:false
+};
+var gr = {color:'rgba(255,255,255,.04)'};
+var tk = {color:'#475569',font:{family:'Inter',size:11}};
+var ax = {grid:gr,border:{display:false},ticks:tk};
+
+// ── CHART 1: Monthly Revenue ─────────────────────────────────────────────
+new Chart(document.getElementById('c-monthly').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets:[{
+      data:[208291,191057,511317,176248,251430,226273],
+      borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.07)',borderWidth:2.5,
+      fill:true,tension:.4,pointBackgroundColor:'#F59E0B',
+      pointBorderColor:'#060912',pointBorderWidth:2,pointRadius:5,pointHoverRadius:7
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){return ' ₹'+c.raw.toLocaleString('en-IN');}}}},
+    scales:{x:{...ax},y:{...ax,ticks:{...tk,callback:function(v){return '₹'+(v/1000).toFixed(0)+'K';}}}}
+  }
+});
+
+// ── CHART 2: Store Revenue ───────────────────────────────────────────────
+new Chart(document.getElementById('c-store').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Pune-Viman','Bangalore','Mumbai','Hyderabad','Chennai','Delhi'],
+    datasets:[{
+      data:[476691,311593,258578,248946,179385,89423],
+      borderRadius:6,borderWidth:0,
+      backgroundColor:['rgba(248,113,113,.7)','rgba(245,158,11,.75)','rgba(245,158,11,.75)',
+        'rgba(245,158,11,.75)','rgba(245,158,11,.75)','rgba(248,113,113,.7)']
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){return ' ₹'+c.raw.toLocaleString('en-IN');}}}}  ,
+    scales:{x:{...ax,ticks:{...tk,callback:function(v){return '₹'+(v/1000).toFixed(0)+'K';}}},y:{...ax}}
+  }
+});
+
+// ── CHART 3: Top Products ────────────────────────────────────────────────
+new Chart(document.getElementById('c-product').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Coffee Sub. Box','Ltd Ed. Geisha','French Press','Ethiopian Yirgac.','Pour Over Kit','Cold Brew Conc.','Iced Coffee Sach.','Decaf Smooth'],
+    datasets:[{
+      data:[259852,245826,179262,134925,109094,91928,78851,74217],
+      borderRadius:6,borderWidth:0,
+      backgroundColor:['rgba(245,158,11,.75)','rgba(34,197,94,.8)','rgba(96,165,250,.75)',
+        'rgba(34,197,94,.8)','rgba(96,165,250,.75)','rgba(34,197,94,.8)',
+        'rgba(34,197,94,.8)','rgba(245,158,11,.75)']
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){return ' ₹'+c.raw.toLocaleString('en-IN');}}}}  ,
+    scales:{x:{...ax,ticks:{...tk,callback:function(v){return '₹'+(v/1000).toFixed(0)+'K';}}},y:{...ax}}
+  }
+});
+
+// ── CHART 4: Campaign ROI ────────────────────────────────────────────────
+new Chart(document.getElementById('c-campaign').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Email Newsletter Q1','College Campus Drive','WhatsApp Broadcast','YouTube Review','New Year Fest','Google Ads Brand','Instagram Reels','Influencer May','Podcast Spon.'],
+    datasets:[{
+      data:[7590,7394,3454,2800,1735,1415,586,-82,-99],
+      borderRadius:6,borderWidth:0,
+      backgroundColor:[
+        'rgba(34,197,94,.8)','rgba(34,197,94,.8)','rgba(34,197,94,.8)',
+        'rgba(34,197,94,.8)','rgba(245,158,11,.75)','rgba(245,158,11,.75)',
+        'rgba(245,158,11,.75)','rgba(248,113,113,.75)','rgba(248,113,113,.75)'
+      ]
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,indexAxis:'y',
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){return ' ROI: '+c.raw+'%';}}}}  ,
+    scales:{x:{...ax,ticks:{...tk,callback:function(v){return v+'%';}}},y:{...ax}}
+  }
+});
+
+// ── CHART 5: Store Ratings ───────────────────────────────────────────────
+new Chart(document.getElementById('c-ratings').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Bangalore','Chennai','Mumbai','Hyderabad','Pune','Delhi','Online'],
+    datasets:[{
+      data:[4.03,3.77,3.74,3.64,3.58,3.55,3.21],
+      borderRadius:6,borderWidth:0,
+      backgroundColor:['rgba(34,197,94,.8)','rgba(245,158,11,.75)','rgba(245,158,11,.75)',
+        'rgba(245,158,11,.75)','rgba(245,158,11,.75)','rgba(248,113,113,.65)','rgba(248,113,113,.65)']
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){return ' ★'+c.raw;}}}}  ,
+    scales:{x:{...ax},y:{...ax,min:2.5,max:5,ticks:{...tk,callback:function(v){return '★'+v;}}}}
+  }
+});
+
+// ── CHART 6: Website Traffic ─────────────────────────────────────────────
+new Chart(document.getElementById('c-traffic').getContext('2d'),{
+  type:'line',
+  data:{
+    labels:['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets:[
+      {label:'Sessions',data:[68678,65952,41087,63264,48949,114230],
+        borderColor:'#F59E0B',backgroundColor:'rgba(245,158,11,.06)',fill:true,
+        tension:.4,borderWidth:2.5,pointRadius:4,pointBackgroundColor:'#F59E0B',
+        pointBorderColor:'#060912',pointBorderWidth:2},
+      {label:'Visitors',data:[54147,48639,30673,41333,31136,88993],
+        borderColor:'#60A5FA',backgroundColor:'rgba(96,165,250,.06)',fill:true,
+        tension:.4,borderWidth:2,pointRadius:3,pointBackgroundColor:'#60A5FA',
+        pointBorderColor:'#060912',pointBorderWidth:2}
+    ]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{
+      legend:{display:true,labels:{color:'#94A3B8',font:{size:11},boxWidth:10,usePointStyle:true}},
+      tooltip:{...tip}
+    },
+    scales:{x:{...ax},y:{...ax,ticks:{...tk,callback:function(v){return (v/1000).toFixed(0)+'K';}}}}
+  }
+});
+
+// ── CHART 7: Dept Payroll ────────────────────────────────────────────────
+new Chart(document.getElementById('c-dept').getContext('2d'),{
+  type:'bar',
+  data:{
+    labels:['Engineering','Marketing','Operations','Sales','Finance','HR','Product'],
+    datasets:[{
+      data:[1331465,764106,672664,585264,453617,270143,244229],
+      borderRadius:6,borderWidth:0,
+      backgroundColor:['rgba(248,113,113,.65)','rgba(34,197,94,.8)','rgba(245,158,11,.75)',
+        'rgba(245,158,11,.75)','rgba(248,113,113,.65)','rgba(34,197,94,.8)','rgba(245,158,11,.75)']
+    }]
+  },
+  options:{
+    responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},tooltip:{...tip,callbacks:{label:function(c){
+      var perfs=[3.30,4.03,3.71,3.57,3.25,4.37,3.65];
+      return ' ₹'+(c.raw/100000).toFixed(1)+'L/mo · ★'+perfs[c.dataIndex];
+    }}}}  ,
+    scales:{x:{...ax},y:{...ax,ticks:{...tk,callback:function(v){return '₹'+(v/100000).toFixed(1)+'L';}}}}
+  }
+});
+
+// ── DEPT LIST (render) ───────────────────────────────────────────────────
+var depts=[
+  {n:'Engineering',hc:9,pay:'₹13.3L',perf:3.30,c:'#F87171'},
+  {n:'Marketing',hc:7,pay:'₹7.6L',perf:4.03,c:'#22C55E'},
+  {n:'Operations',hc:9,pay:'₹6.7L',perf:3.71,c:'#F59E0B'},
+  {n:'Sales',hc:7,pay:'₹5.9L',perf:3.57,c:'#F59E0B'},
+  {n:'Finance',hc:4,pay:'₹4.5L',perf:3.25,c:'#F87171'},
+  {n:'HR',hc:3,pay:'₹2.7L',perf:4.37,c:'#22C55E'},
+  {n:'Product',hc:2,pay:'₹2.4L',perf:3.65,c:'#F59E0B'},
+];
+var dl = document.getElementById('dept-list');
+depts.forEach(function(d){
+  dl.innerHTML += '<div class="dept-row"><div><div class="dept-name">'+d.n+'</div><div class="dept-sub">'+d.hc+' staff</div></div>'+
+    '<div style="text-align:right"><div class="dept-pay">'+d.pay+'/mo</div>'+
+    '<div style="color:'+d.c+';font-size:11px">★ '+d.perf+'</div></div></div>';
+});
+
+// ── PAYROLL ANOMALIES (render) ───────────────────────────────────────────
+var anos=[
+  {n:'Karthik Kumar',role:'Content Creator',dept:'Marketing',sal:'₹1,85,000',dev:'CEO Flagged',sev:'high'},
+  {n:'Rahul Rao',role:'Regional Manager',dept:'Sales',sal:'₹46,262',dev:'-47.5%',sev:'high'},
+  {n:'Siddharth Gupta',role:'Account Executive',dept:'Sales',sal:'₹1,10,823',dev:'+38.4%',sev:'medium'},
+  {n:'Trisha Rao',role:'Brand Manager',dept:'Marketing',sal:'₹58,681',dev:'-39.5%',sev:'medium'},
+  {n:'Trisha Desai',role:'Supply Chain Coord',dept:'Operations',sal:'₹98,844',dev:'+42.7%',sev:'medium'},
+  {n:'Riya Kumar',role:'Warehouse Manager',dept:'Operations',sal:'₹43,254',dev:'-44.2%',sev:'medium'},
+];
+var ag = document.getElementById('ano-grid');
+anos.forEach(function(a,i){
+  var bc = a.sev==='high'?'#F87171':'#F59E0B';
+  var bt = a.sev==='high'?'<span class="badge br">'+a.dev+'</span>':'<span class="badge ba">'+a.dev+'</span>';
+  ag.innerHTML += '<div class="ano-card" data-r data-d="'+(i%3+1)+'" style="border-left:3px solid '+bc+'">'+
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px">'+
+    '<div class="ano-name">'+a.n+'</div>'+bt+'</div>'+
+    '<div class="ano-role">'+a.role+' · '+a.dept+'</div>'+
+    '<div class="ano-sal">'+a.sal+'/mo</div></div>';
+});
+// Re-observe new elements
+document.querySelectorAll('#ano-grid [data-r]').forEach(function(el){
+  var obs2 = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');obs2.unobserve(e.target);}});
+  },{threshold:.08});
+  obs2.observe(el);
+});
+
+// ── FLAG CARDS (render) ──────────────────────────────────────────────────
+var flags=[
+  {title:'Pune Bulk-Order Anomaly',sev:'critical',bc:'#F87171',bt:'br',
+    desc:'30.5% of H1 revenue (₹4.76L) from a single store. March spike is 2.5× the normal run rate. CEO flagged suspected channel-partner bulk order or revenue inflation.',
+    action:'Complete forensic audit before investor data room opens'},
+  {title:'Marketing Capital Destruction',sev:'critical',bc:'#F87171',bt:'br',
+    desc:'Podcast Sponsorship: ₹1.75L spend → 2 conversions → ROI -99.4%. Influencer May: ₹1.6L spend → 26 conversions → ROI -81.6%. Total ₹3.35L destroyed.',
+    action:'Terminate all podcast & influencer-led spend immediately'},
+  {title:'Content Creator Overpayment',sev:'high',bc:'#F59E0B',bt:'ba',
+    desc:'Karthik Kumar (Content Creator, Marketing) earns ₹1,85,000/mo — the highest salary in the company, above all Senior Engineers. CEO explicitly flagged this.',
+    action:'HR to audit and correct salary record this week'},
+  {title:'Sales Team Compensation Gap',sev:'high',bc:'#F59E0B',bt:'ba',
+    desc:'Rahul Rao (Regional Manager) paid 47.5% below role average at ₹46,262/mo. 3 Sales resignations in H1 — exit interviews cite compensation gaps directly.',
+    action:'Rebalance Sales compensation bands urgently'},
+  {title:'Supplier Payment Exposure',sev:'critical',bc:'#F87171',bt:'br',
+    desc:'34.7% of invoices unpaid (33/95). ₹1.08 Cr owed. LogiExpress — sole logistics partner — has 3 unpaid invoices totalling ₹14.8L and raised rates 3× this year.',
+    action:'Prioritise logistics payment & onboard backup provider'},
+  {title:'Delhi Store Structural Risk',sev:'medium',bc:'#60A5FA',bt:'bb',
+    desc:'Delhi-Connaught generates just 5.7% of H1 revenue, footfall down 40% due to metro construction. Only 2 staff. Lease renewal in September 2026.',
+    action:'CEO to decide close/relocate before August 2026'},
+];
+var fg = document.getElementById('flag-grid');
+flags.forEach(function(f,i){
+  fg.innerHTML += '<div class="flag-card" data-r data-d="'+(i%2+1)+'" style="border-left:3px solid '+f.bc+'">'+
+    '<div class="flag-sev"><span class="badge '+f.bt+'">'+f.sev.toUpperCase()+'</span></div>'+
+    '<div class="flag-title">'+f.title+'</div>'+
+    '<div class="flag-desc">'+f.desc+'</div>'+
+    '<div class="flag-action"><span class="flag-arrow">&rarr;</span><span>'+f.action+'</span></div></div>';
+});
+document.querySelectorAll('#flag-grid [data-r]').forEach(function(el){
+  var o=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target);}});},{threshold:.08});
+  o.observe(el);
+});
+
+// ── RECOMMENDATIONS (render) ─────────────────────────────────────────────
+var recs=[
+  {p:'critical',c:'#F87171',bg:'rgba(248,113,113,.07)',bc:'rgba(248,113,113,.22)',lbl:'🔴 CRITICAL',title:'Resolve Pune bulk-order anomaly before investor data room',cat:'Finance'},
+  {p:'critical',c:'#F87171',bg:'rgba(248,113,113,.07)',bc:'rgba(248,113,113,.22)',lbl:'🔴 CRITICAL',title:'Clear ₹1.08 Cr supplier payment backlog',cat:'Procurement'},
+  {p:'high',c:'#F59E0B',bg:'rgba(245,158,11,.07)',bc:'rgba(245,158,11,.22)',lbl:'🟠 HIGH',title:'Audit & correct Karthik Kumar Content Creator salary (₹1.85L)',cat:'HR'},
+  {p:'high',c:'#F59E0B',bg:'rgba(245,158,11,.07)',bc:'rgba(245,158,11,.22)',lbl:'🟠 HIGH',title:'Fix Sales team -47.5% underpayment to reduce attrition',cat:'HR'},
+  {p:'high',c:'#F59E0B',bg:'rgba(245,158,11,.07)',bc:'rgba(245,158,11,.22)',lbl:'🟠 HIGH',title:'Cut all podcast & Instagram-influencer campaigns permanently',cat:'Marketing'},
+  {p:'high',c:'#F59E0B',bg:'rgba(245,158,11,.07)',bc:'rgba(245,158,11,.22)',lbl:'🟠 HIGH',title:'Onboard alternative logistics partner — LogiExpress single-source risk',cat:'Operations'},
+  {p:'medium',c:'#60A5FA',bg:'rgba(96,165,250,.07)',bc:'rgba(96,165,250,.22)',lbl:'🟡 MEDIUM',title:'Increase Hyderabad replenishment frequency (27 low-stock incidents)',cat:'Supply Chain'},
+  {p:'medium',c:'#60A5FA',bg:'rgba(96,165,250,.07)',bc:'rgba(96,165,250,.22)',lbl:'🟡 MEDIUM',title:'Make Delhi store decision before September 2026 lease renewal',cat:'Strategy'},
+  {p:'medium',c:'#60A5FA',bg:'rgba(96,165,250,.07)',bc:'rgba(96,165,250,.22)',lbl:'🟡 MEDIUM',title:'Improve Online channel post-purchase experience (lowest rating 3.21/5)',cat:'Product'},
+  {p:'low',c:'#22C55E',bg:'rgba(34,197,94,.07)',bc:'rgba(34,197,94,.22)',lbl:'🟢 LOW',title:'Scale Email Newsletter — ₹12 CPA, 7,590% ROI',cat:'Marketing'},
+  {p:'low',c:'#22C55E',bg:'rgba(34,197,94,.07)',bc:'rgba(34,197,94,.22)',lbl:'🟢 LOW',title:'Triple Cold Brew inventory ahead of next summer (71.6% margin)',cat:'Operations'},
+  {p:'low',c:'#22C55E',bg:'rgba(34,197,94,.07)',bc:'rgba(34,197,94,.22)',lbl:'🟢 LOW',title:'Launch loyalty program — Product team spec is ready',cat:'Product'},
+];
+var rl = document.getElementById('rec-list');
+recs.forEach(function(r,i){
+  rl.innerHTML += '<div class="rec-item" data-r data-d="'+(i%5+1)+'" style="background:'+r.bg+';border-color:'+r.bc+'">'+
+    '<span class="rec-p" style="color:'+r.c+'">'+r.lbl+'</span>'+
+    '<span class="rec-title">'+r.title+'</span>'+
+    '<span class="rec-cat">'+r.cat+'</span></div>';
+});
+document.querySelectorAll('#rec-list [data-r]').forEach(function(el){
+  var o=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');o.unobserve(e.target);}});},{threshold:.08});
+  o.observe(el);
+});
+</script>
+</body>
+</html>
